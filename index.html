@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhật Ký Cảm Xúc 🌸</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #555;
+        }
+
+        .app-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 30px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 15px 35px rgba(238, 156, 167, 0.3);
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff758c;
+            margin-bottom: 10px;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .sync-status {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #aaa;
+            transition: color 0.3s;
+        }
+
+        .sync-status.online {
+            color: #4caf50;
+        }
+
+        .sync-status.error {
+            color: #ff4757;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            background: #fff0f3;
+            padding: 20px;
+            border-radius: 20px;
+            border: 2px dashed #ffb6c1;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-weight: 700;
+            color: #ff758c;
+            font-size: 14px;
+        }
+
+        select {
+            padding: 10px 15px;
+            border-radius: 15px;
+            border: 1px solid #ffb6c1;
+            background: #fff;
+            color: #555;
+            font-size: 16px;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        select:focus {
+            box-shadow: 0 0 0 3px rgba(255, 117, 140, 0.2);
+        }
+
+        button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            align-self: flex-end;
+            margin-bottom: 2px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .day-box {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 5px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid transparent;
+        }
+
+        .day-box:hover {
+            transform: translateY(-3px);
+            border-color: #ffb6c1;
+            box-shadow: 0 6px 15px rgba(255, 182, 193, 0.4);
+        }
+
+        .day-num {
+            font-size: 12px;
+            font-weight: 700;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+
+        .day-emoji {
+            font-size: 24px;
+        }
+
+        .stats-section {
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .stats-section h3 {
+            color: #ff758c;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: #fff0f3;
+            padding: 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .stat-item span {
+            font-size: 18px;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 500px) {
+            .calendar {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <h1>✨ Trạm Cảm Xúc 🎀</h1>
+        <div class="sync-status" id="syncStatus">⏳ Đang kết nối Firebase...</div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="daySelect">Ngày trong tháng:</label>
+                <select id="daySelect"></select>
+            </div>
+            
+            <div class="control-group">
+                <label for="emotionSelect">Hôm nay bạn thế nào?</label>
+                <select id="emotionSelect">
+                    <option value="🥰">🥰 Yêu đời rạng rỡ</option>
+                    <option value="😄">😄 Vui vẻ năng lượng</option>
+                    <option value="😌">😌 Bình yên thư giãn</option>
+                    <option value="🥺">🥺 Hơi xúc động</option>
+                    <option value="😫">😫 Mệt mỏi rã rời</option>
+                    <option value="😡">😡 Bực mình chói chang</option>
+                    <option value="😭">😭 Buồn xỉu up xỉu down</option>
+                    <option value="✨">✨ Đầy tự hào</option>
+                </select>
+            </div>
+            
+            <button id="saveBtn" onclick="saveEmotion()">Ghi lại 💕</button>
+        </div>
+
+        <div class="calendar" id="calendar"></div>
+
+        <div class="stats-section">
+            <h3>📊 Thống kê tháng này của bạn</h3>
+            <div class="stats-grid" id="stats">
+                <!-- Dữ liệu thống kê sẽ hiển thị ở đây -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // ===== Firebase SDK (modular, qua CDN) =====
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import {
+            getFirestore,
+            doc,
+            setDoc,
+            onSnapshot
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // Cấu hình Firebase của bạn
+        const firebaseConfig = {
+            apiKey: "AIzaSyDK3tkrs9mghCsC0BMw-C8CoQMutpXaCIM",
+            authDomain: "camxuc26-5eed3.firebaseapp.com",
+            projectId: "camxuc26-5eed3",
+            storageBucket: "camxuc26-5eed3.firebasestorage.app",
+            messagingSenderId: "343814947744",
+            appId: "1:343814947744:web:0c4477bd01251a28625ac5"
+        };
+
+        // Khởi tạo Firebase + Firestore
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Tất cả dữ liệu cảm xúc được lưu trong 1 document duy nhất
+        // collection "emotionDiary" -> document "myEmotions"
+        const emotionsDocRef = doc(db, "emotionDiary", "myEmotions");
+
+        const daysInMonth = 31;
+        let emotionsData = {};
+        let isSaving = false;
+
+        const syncStatusEl = () => document.getElementById('syncStatus');
+        const saveBtn = () => document.getElementById('saveBtn');
+
+        function setStatus(text, type) {
+            const el = syncStatusEl();
+            el.textContent = text;
+            el.className = 'sync-status' + (type ? ' ' + type : '');
+        }
+
+        function init() {
+            // Tạo danh sách ngày cho dropdown
+            const daySelect = document.getElementById('daySelect');
+            for (let i = 1; i <= daysInMonth; i++) {
+                daySelect.innerHTML += `<option value="${i}">Ngày ${i}</option>`;
+            }
+
+            // Tự động chọn ngày hôm nay
+            const today = new Date().getDate();
+            if (today <= daysInMonth) {
+                daySelect.value = today;
+            }
+
+            // Lắng nghe dữ liệu realtime từ Firestore
+            onSnapshot(
+                emotionsDocRef,
+                (snapshot) => {
+                    if (snapshot.exists()) {
+                        emotionsData = snapshot.data().data || {};
+                    } else {
+                        emotionsData = {};
+                    }
+                    setStatus('🟢 Đã đồng bộ với Firebase', 'online');
+                    updateUI();
+                },
+                (error) => {
+                    console.error("Lỗi khi lắng nghe Firestore:", error);
+                    setStatus('⚠️ Lỗi kết nối Firebase (xem console)', 'error');
+                }
+            );
+        }
+
+        window.saveEmotion = async function saveEmotion() {
+            if (isSaving) return;
+
+            const day = document.getElementById('daySelect').value;
+            const emotion = document.getElementById('emotionSelect').value;
+
+            // Cập nhật local trước để UI phản hồi nhanh
+            const previousData = { ...emotionsData };
+            emotionsData[day] = emotion;
+            updateUI();
+
+            isSaving = true;
+            saveBtn().disabled = true;
+            setStatus('⏳ Đang lưu lên Firebase...', '');
+
+            try {
+                await setDoc(emotionsDocRef, { data: emotionsData }, { merge: true });
+                setStatus('🟢 Đã đồng bộ với Firebase', 'online');
+            } catch (error) {
+                console.error("Lỗi khi lưu lên Firestore:", error);
+                emotionsData = previousData; // rollback nếu lưu thất bại
+                updateUI();
+                setStatus('⚠️ Lưu thất bại, kiểm tra kết nối / quyền Firestore', 'error');
+            } finally {
+                isSaving = false;
+                saveBtn().disabled = false;
+            }
+        };
+
+        function updateUI() {
+            renderCalendar();
+            renderStats();
+        }
+
+        function renderCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayBox = document.createElement('div');
+                dayBox.className = 'day-box';
+
+                // Mặc định là trái tim trắng nếu chưa chọn cảm xúc
+                const emoji = emotionsData[i] || '🤍';
+
+                dayBox.innerHTML = `
+                    <div class="day-num">${i}</div>
+                    <div class="day-emoji">${emoji}</div>
+                `;
+                calendar.appendChild(dayBox);
+            }
+        }
+
+        function renderStats() {
+            const statsContainer = document.getElementById('stats');
+            const counts = {};
+
+            // Đếm số lượng từng loại cảm xúc
+            Object.values(emotionsData).forEach(emoji => {
+                counts[emoji] = (counts[emoji] || 0) + 1;
+            });
+
+            statsContainer.innerHTML = '';
+
+            if (Object.keys(counts).length === 0) {
+                statsContainer.innerHTML = '<p style="grid-column: 1/-1; color: #999;">Bạn chưa ghi lại cảm xúc nào. Hãy bắt đầu nhé! 🌸</p>';
+                return;
+            }
+
+            for (const [emoji, count] of Object.entries(counts)) {
+                statsContainer.innerHTML += `
+                    <div class="stat-item">
+                        <span>${emoji}</span> ${count} ngày
+                    </div>
+                `;
+            }
+        }
+
+        // Chạy hàm khởi tạo khi DOM sẵn sàng
+        init();
+    </script>
+</body>
+</html>
