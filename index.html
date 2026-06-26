@@ -65,6 +65,102 @@
             color: #ff4757;
         }
 
+        /* ===== Màn hình đăng nhập ===== */
+        .login-screen {
+            text-align: center;
+            padding: 30px 10px 10px;
+        }
+
+        .login-screen p {
+            color: #999;
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        .google-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            color: #444;
+            border: 1px solid #ffd3da;
+            border-radius: 15px;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .google-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 117, 140, 0.25);
+        }
+
+        .google-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .login-loading {
+            text-align: center;
+            color: #999;
+            padding: 40px 10px;
+            font-weight: 700;
+        }
+
+        /* ===== Thanh thông tin người dùng ===== */
+        .user-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: #fff0f3;
+            border-radius: 15px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #ffb6c1;
+        }
+
+        .user-info span {
+            font-weight: 700;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .logout-btn {
+            background: transparent;
+            color: #ff758c;
+            border: 1px solid #ffb6c1;
+            padding: 6px 14px;
+            font-size: 13px;
+            border-radius: 12px;
+            box-shadow: none;
+        }
+
+        .logout-btn:hover {
+            transform: none;
+            background: #ffe1e6;
+            box-shadow: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
         .controls {
             display: flex;
             flex-wrap: wrap;
@@ -214,37 +310,67 @@
 
     <div class="app-container">
         <h1>✨ Trạm Cảm Xúc 🎀</h1>
-        <div class="sync-status" id="syncStatus">⏳ Đang kết nối Firebase...</div>
 
-        <div class="controls">
-            <div class="control-group">
-                <label for="daySelect">Ngày trong tháng:</label>
-                <select id="daySelect"></select>
-            </div>
-            
-            <div class="control-group">
-                <label for="emotionSelect">Hôm nay bạn thế nào?</label>
-                <select id="emotionSelect">
-                    <option value="🥰">🥰 Yêu đời rạng rỡ</option>
-                    <option value="😄">😄 Vui vẻ năng lượng</option>
-                    <option value="😌">😌 Bình yên thư giãn</option>
-                    <option value="🥺">🥺 Hơi xúc động</option>
-                    <option value="😫">😫 Mệt mỏi rã rời</option>
-                    <option value="😡">😡 Bực mình chói chang</option>
-                    <option value="😭">😭 Buồn xỉu up xỉu down</option>
-                    <option value="✨">✨ Đầy tự hào</option>
-                </select>
-            </div>
-            
-            <button id="saveBtn" onclick="saveEmotion()">Ghi lại 💕</button>
+        <!-- Đang kiểm tra trạng thái đăng nhập -->
+        <div class="login-loading" id="authLoading">⏳ Đang kiểm tra đăng nhập...</div>
+
+        <!-- Màn hình đăng nhập (ẩn mặc định) -->
+        <div class="login-screen hidden" id="loginScreen">
+            <p>Đăng nhập bằng Gmail để lưu nhật ký cảm xúc riêng của bạn 🌸</p>
+            <button class="google-btn" id="googleLoginBtn">
+                <svg viewBox="0 0 48 48">
+                    <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+                    <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+                    <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+                    <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571.001-.001 6.19 5.238 6.19 5.238C40.205 35.836 44 30.5 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+                </svg>
+                Đăng nhập bằng Google
+            </button>
+            <div class="sync-status" id="authStatus" style="margin-top: 15px;"></div>
         </div>
 
-        <div class="calendar" id="calendar"></div>
+        <!-- Nội dung app (ẩn cho tới khi đăng nhập) -->
+        <div id="appContent" class="hidden">
+            <div class="user-bar">
+                <div class="user-info">
+                    <img id="userAvatar" src="" alt="avatar">
+                    <span id="userName"></span>
+                </div>
+                <button class="logout-btn" id="logoutBtn">Đăng xuất</button>
+            </div>
 
-        <div class="stats-section">
-            <h3>📊 Thống kê tháng này của bạn</h3>
-            <div class="stats-grid" id="stats">
-                <!-- Dữ liệu thống kê sẽ hiển thị ở đây -->
+            <div class="sync-status" id="syncStatus">⏳ Đang kết nối Firebase...</div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="daySelect">Ngày trong tháng:</label>
+                    <select id="daySelect"></select>
+                </div>
+
+                <div class="control-group">
+                    <label for="emotionSelect">Hôm nay bạn thế nào?</label>
+                    <select id="emotionSelect">
+                        <option value="🥰">🥰 Yêu đời rạng rỡ</option>
+                        <option value="😄">😄 Vui vẻ năng lượng</option>
+                        <option value="😌">😌 Bình yên thư giãn</option>
+                        <option value="🥺">🥺 Hơi xúc động</option>
+                        <option value="😫">😫 Mệt mỏi rã rời</option>
+                        <option value="😡">😡 Bực mình chói chang</option>
+                        <option value="😭">😭 Buồn xỉu up xỉu down</option>
+                        <option value="✨">✨ Đầy tự hào</option>
+                    </select>
+                </div>
+
+                <button id="saveBtn" onclick="saveEmotion()">Ghi lại 💕</button>
+            </div>
+
+            <div class="calendar" id="calendar"></div>
+
+            <div class="stats-section">
+                <h3>📊 Thống kê tháng này của bạn</h3>
+                <div class="stats-grid" id="stats">
+                    <!-- Dữ liệu thống kê sẽ hiển thị ở đây -->
+                </div>
             </div>
         </div>
     </div>
@@ -252,6 +378,13 @@
     <script type="module">
         // ===== Firebase SDK (modular, qua CDN) =====
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import {
+            getAuth,
+            GoogleAuthProvider,
+            signInWithPopup,
+            signOut,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import {
             getFirestore,
             doc,
@@ -269,61 +402,121 @@
             appId: "1:343814947744:web:0c4477bd01251a28625ac5"
         };
 
-        // Khởi tạo Firebase + Firestore
+        // Khởi tạo Firebase
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
-
-        // Tất cả dữ liệu cảm xúc được lưu trong 1 document duy nhất
-        // collection "emotionDiary" -> document "myEmotions"
-        const emotionsDocRef = doc(db, "emotionDiary", "myEmotions");
+        const googleProvider = new GoogleAuthProvider();
 
         const daysInMonth = 31;
         let emotionsData = {};
         let isSaving = false;
+        let unsubscribeSnapshot = null;
+        let currentUid = null;
 
-        const syncStatusEl = () => document.getElementById('syncStatus');
-        const saveBtn = () => document.getElementById('saveBtn');
+        // ===== Phần tử DOM =====
+        const authLoadingEl = document.getElementById('authLoading');
+        const loginScreenEl = document.getElementById('loginScreen');
+        const appContentEl = document.getElementById('appContent');
+        const authStatusEl = document.getElementById('authStatus');
+        const syncStatusEl = document.getElementById('syncStatus');
+        const saveBtn = document.getElementById('saveBtn');
+        const userAvatarEl = document.getElementById('userAvatar');
+        const userNameEl = document.getElementById('userName');
 
-        function setStatus(text, type) {
-            const el = syncStatusEl();
-            el.textContent = text;
-            el.className = 'sync-status' + (type ? ' ' + type : '');
+        function setSyncStatus(text, type) {
+            syncStatusEl.textContent = text;
+            syncStatusEl.className = 'sync-status' + (type ? ' ' + type : '');
         }
 
-        function init() {
-            // Tạo danh sách ngày cho dropdown
+        function setAuthStatus(text, type) {
+            authStatusEl.textContent = text;
+            authStatusEl.className = 'sync-status' + (type ? ' ' + type : '');
+        }
+
+        // ===== Đăng nhập / Đăng xuất =====
+        document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+            setAuthStatus('⏳ Đang mở cửa sổ đăng nhập Google...', '');
+            try {
+                await signInWithPopup(auth, googleProvider);
+                // onAuthStateChanged sẽ tự xử lý phần còn lại
+            } catch (error) {
+                console.error("Lỗi đăng nhập Google:", error);
+                setAuthStatus('⚠️ Đăng nhập thất bại: ' + (error.code || error.message), 'error');
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+            } catch (error) {
+                console.error("Lỗi đăng xuất:", error);
+            }
+        });
+
+        // ===== Theo dõi trạng thái đăng nhập =====
+        onAuthStateChanged(auth, (user) => {
+            authLoadingEl.classList.add('hidden');
+
+            // Hủy lắng nghe dữ liệu cũ nếu có (đổi tài khoản / đăng xuất)
+            if (unsubscribeSnapshot) {
+                unsubscribeSnapshot();
+                unsubscribeSnapshot = null;
+            }
+
+            if (user) {
+                currentUid = user.uid;
+                loginScreenEl.classList.add('hidden');
+                appContentEl.classList.remove('hidden');
+
+                userNameEl.textContent = user.displayName || user.email || 'Người dùng';
+                userAvatarEl.src = user.photoURL || 'https://api.dicebear.com/7.x/initials/svg?seed=' + encodeURIComponent(user.email || 'U');
+
+                initCalendarOnce();
+                listenToUserData(user.uid);
+            } else {
+                currentUid = null;
+                appContentEl.classList.add('hidden');
+                loginScreenEl.classList.remove('hidden');
+                setAuthStatus('', '');
+            }
+        });
+
+        let calendarInitialized = false;
+        function initCalendarOnce() {
+            if (calendarInitialized) return;
+            calendarInitialized = true;
+
             const daySelect = document.getElementById('daySelect');
             for (let i = 1; i <= daysInMonth; i++) {
                 daySelect.innerHTML += `<option value="${i}">Ngày ${i}</option>`;
             }
-
-            // Tự động chọn ngày hôm nay
             const today = new Date().getDate();
             if (today <= daysInMonth) {
                 daySelect.value = today;
             }
+        }
 
-            // Lắng nghe dữ liệu realtime từ Firestore
-            onSnapshot(
-                emotionsDocRef,
+        // Mỗi người dùng có 1 document riêng, định danh bằng uid
+        // collection "emotionDiary" -> document "{uid}"
+        function listenToUserData(uid) {
+            const userDocRef = doc(db, "emotionDiary", uid);
+            unsubscribeSnapshot = onSnapshot(
+                userDocRef,
                 (snapshot) => {
-                    if (snapshot.exists()) {
-                        emotionsData = snapshot.data().data || {};
-                    } else {
-                        emotionsData = {};
-                    }
-                    setStatus('🟢 Đã đồng bộ với Firebase', 'online');
+                    emotionsData = snapshot.exists() ? (snapshot.data().data || {}) : {};
+                    setSyncStatus('🟢 Đã đồng bộ với Firebase', 'online');
                     updateUI();
                 },
                 (error) => {
                     console.error("Lỗi khi lắng nghe Firestore:", error);
-                    setStatus('⚠️ Lỗi kết nối Firebase (xem console)', 'error');
+                    setSyncStatus('⚠️ Lỗi kết nối Firebase (xem console)', 'error');
                 }
             );
         }
 
         window.saveEmotion = async function saveEmotion() {
-            if (isSaving) return;
+            if (isSaving || !currentUid) return;
 
             const day = document.getElementById('daySelect').value;
             const emotion = document.getElementById('emotionSelect').value;
@@ -334,20 +527,21 @@
             updateUI();
 
             isSaving = true;
-            saveBtn().disabled = true;
-            setStatus('⏳ Đang lưu lên Firebase...', '');
+            saveBtn.disabled = true;
+            setSyncStatus('⏳ Đang lưu lên Firebase...', '');
 
             try {
-                await setDoc(emotionsDocRef, { data: emotionsData }, { merge: true });
-                setStatus('🟢 Đã đồng bộ với Firebase', 'online');
+                const userDocRef = doc(db, "emotionDiary", currentUid);
+                await setDoc(userDocRef, { data: emotionsData }, { merge: true });
+                setSyncStatus('🟢 Đã đồng bộ với Firebase', 'online');
             } catch (error) {
                 console.error("Lỗi khi lưu lên Firestore:", error);
                 emotionsData = previousData; // rollback nếu lưu thất bại
                 updateUI();
-                setStatus('⚠️ Lưu thất bại, kiểm tra kết nối / quyền Firestore', 'error');
+                setSyncStatus('⚠️ Lưu thất bại, kiểm tra kết nối / quyền Firestore', 'error');
             } finally {
                 isSaving = false;
-                saveBtn().disabled = false;
+                saveBtn.disabled = false;
             }
         };
 
@@ -399,9 +593,6 @@
                 `;
             }
         }
-
-        // Chạy hàm khởi tạo khi DOM sẵn sàng
-        init();
     </script>
 </body>
 </html>
